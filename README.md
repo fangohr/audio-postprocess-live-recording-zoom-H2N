@@ -46,7 +46,7 @@ Scenario:
 Input:
 - taken recording as mp3
 - ask Logic Pro to run Mastering Assistant over it. This, roughly, recommends to 
-  - boost frequencies between 20 and 100 Hz by 4 db
+  - boost frequencies between 20 and 100 Hz by 5 db
   - reduce frequences between 100 and 500 Hz 5 db
   
 Implementation:
