@@ -57,6 +57,16 @@ Implementation:
   - if desired, push low frequences a bit further (probably mostly making up for poor speakers: at rehearsal time and when listening)
 - Details are in [src/audio_postprocess_live_recording_zoom_h2n/cli.py](src/audio_postprocess_live_recording_zoom_h2n/cli.py) and can be modified according to taste.
 
+## Visualising effect of the applied filters
+
+The command `audio-postprocess-frequency-plot` shows a spectrum which indicates which frequences are boosted and reduced.
+
+Details:
+- 10 seconds of white noise are generated
+- the file is processed as if it was a recording
+- a plot is created showing the white noise spectrum (power as function of frequency) together with the spectrum of the processed white noise. 
+- as the white noise data is (effectively) effectively a flat line as a function of frequency, the changes can be seen somewhat easily.
+
 ----
 
 ## Ideas for additional features
