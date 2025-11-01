@@ -24,7 +24,7 @@ jobs:
           pixi info
 
       - name: Install dependencies and package
-        run: pixi install .
+        run: pixi install
 
       - name: Run style checks (pep8)
         run: pixi run check
