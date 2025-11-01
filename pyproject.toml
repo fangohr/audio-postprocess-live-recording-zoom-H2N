@@ -26,3 +26,8 @@ pytest = ">=8.4.2,<9"
 
 [project.scripts]
 audio-live-record-postprocess-file = "audio_postprocess_live_recording_zoom_h2n.cli:audio_live_record_postprocess_file"
+
+
+[tool.ruff]
+select = ["E", "W", "F"]   # PEP 8 + undefined names + unused imports, etc.
+line-length = 88            # match Black if you use it

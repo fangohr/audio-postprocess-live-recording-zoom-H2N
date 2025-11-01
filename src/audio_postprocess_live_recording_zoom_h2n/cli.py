@@ -30,7 +30,7 @@ def process_file(in_file:str, out_file:str):
     
     # could compress if needed
     # threshold -18 dBFS, ratio 3:1, moderate attack/release, a bit of makeup gain
-    comp = {
+    comp = {  # noqa: F841
         'threshold': '-18dB',
         'ratio': 3,
         'attack': 20,      # ms
@@ -42,10 +42,10 @@ def process_file(in_file:str, out_file:str):
     
     # ---- Bass fattening (choose ONE or use both lightly) ----
     # Option A: Low-shelf boost (smooth, musical)
-    low_shelf = {'g': 3.0, 'f': 90, 't': 'q', 'w': 0.7}   # +3 dB shelf below ~90 Hz
+    low_shelf = {'g': 3.0, 'f': 90, 't': 'q', 'w': 0.7}   # +3 dB shelf below ~90 Hz  # noqa: F841
     
     # Option B: Focused bump around 100 Hz (adds punch)
-    bass_bump = {'f': 100, 't': 'q', 'w': 1.0, 'g': 3.0}  # +3 dB @100 Hz, Q=1.0
+    bass_bump = {'f': 100, 't': 'q', 'w': 1.0, 'g': 3.0}  # +3 dB @100 Hz, Q=1.0   # noqa: F841
     
     # ---- Pick ONE (or keep both with smaller gains) ----
     # A) Low-shelf boost (recommended starting point)
@@ -91,9 +91,8 @@ def do_parse_arguments():
 
     args = parser.parse_args()
 
-    prefix = args.prefix
-    filenames = args.filenames
-
+    # prefix = args.prefix
+    # filenames = args.filenames
 
     return args
 
