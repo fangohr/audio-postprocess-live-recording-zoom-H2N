@@ -22,7 +22,7 @@ jobs:
         run: |
           pixi --version
           pixi info
-	  
+
       - name: Install dependencies and package
         run: pixi install .
 
