@@ -17,7 +17,8 @@ platforms = ["osx-arm64"]
 audio_postprocess_live_recording_zoom_h2n = { path = ".", editable = true }
 
 [tool.pixi.tasks]
-tests = "py.test -v"
+test = "py.test -v"
+check = "ruff check ."
 
 [tool.pixi.dependencies]
 ffmpeg-python = ">=0.2.0,<0.3"
@@ -29,5 +30,5 @@ audio-live-record-postprocess-file = "audio_postprocess_live_recording_zoom_h2n.
 
 
 [tool.ruff]
-select = ["E", "W", "F"]   # PEP 8 + undefined names + unused imports, etc.
+lint.select = ["E", "W", "F"]   # PEP 8 + undefined names + unused imports, etc.
 line-length = 88            # match Black if you use it

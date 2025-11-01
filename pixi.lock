@@ -121,7 +121,7 @@ packages:
 - pypi: ./
   name: audio-postprocess-live-recording-zoom-h2n
   version: 0.1.0
-  sha256: b8d1021551459bf28ec9cc0102a36f30a54b1e3391aed910e8ab304f9646ed56
+  sha256: 61730d136f44ebf3e65d06e3d3f2d632decf3afce46d3f80c504de97d3745211
   requires_python: '>=3.11'
   editable: true
 - conda: https://conda.anaconda.org/conda-forge/osx-arm64/bzip2-1.0.8-hd037594_8.conda
