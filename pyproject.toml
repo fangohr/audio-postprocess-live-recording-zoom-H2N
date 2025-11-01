@@ -27,7 +27,7 @@ ruff = ">=0.14.3,<0.15"
 
 
 [project.scripts]
-audio-live-record-postprocess-file = "audio_postprocess_live_recording_zoom_h2n.cli:audio_live_record_postprocess_file"
+audio-postprocess-live-recording = "audio_postprocess_live_recording_zoom_h2n.cli:audio_live_recording_postprocess_file"
 
 
 [tool.ruff]

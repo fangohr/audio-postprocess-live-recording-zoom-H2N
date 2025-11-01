@@ -105,7 +105,7 @@ def do_parse_arguments():
     return args
 
 
-def audio_live_record_postprocess_file():
+def audio_live_recording_postprocess_file():
     args = do_parse_arguments()
     prefix = args.prefix
     filenames = args.filenames
