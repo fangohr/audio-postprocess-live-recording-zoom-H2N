@@ -24,10 +24,13 @@ check = "ruff check ."
 ffmpeg-python = ">=0.2.0,<0.3"
 pytest = ">=8.4.2,<9"
 ruff = ">=0.14.3,<0.15"
+numpy = ">=2.3.4,<3"
+librosa = ">=0.11.0,<0.12"
 
 
 [project.scripts]
 audio-postprocess-live-recording = "audio_postprocess_live_recording_zoom_h2n.cli:audio_live_recording_postprocess_file"
+audio-postprocess-frequency-plot = "audio_postprocess_live_recording_zoom_h2n.plot:main"
 
 
 [tool.ruff]

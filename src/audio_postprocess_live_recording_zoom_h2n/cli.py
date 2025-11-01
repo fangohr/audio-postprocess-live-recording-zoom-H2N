@@ -12,7 +12,8 @@ def process_file(in_file: str, out_file: str):
     stream = ffmpeg.input(in_file)
 
     # High-pass filter to remove sub-bass rumble
-    # ---- High-pass filter (20 Hz, Butterworth high-pass: ~12 dB/oct well below 20Hz) ----
+    # ---- High-pass filter (20 Hz, Butterworth high-pass:
+    # reduce by ~12 dB/oct well below 20Hz) ----
     highpass = {"f": 20, "t": "q", "width": 0.7}
     stream = ffmpeg.filter(stream, "highpass", **highpass)
 

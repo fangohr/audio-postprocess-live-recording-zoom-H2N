@@ -31,3 +31,6 @@ jobs:
 
       - name: Run unit tests
         run: pixi run test
+
+      - name: Run unit plot
+        run: pixi run audio-postprocess-frequency-plot
