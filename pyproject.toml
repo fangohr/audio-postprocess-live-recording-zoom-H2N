@@ -1,0 +1,28 @@
+[project]
+authors = [{name = "Hans Fangohr", email = "fangohr@users.noreply.github.com"}]
+dependencies = []
+name = "audio_postprocess_live_recording_zoom_h2n"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
+[build-system]
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+audio_postprocess_live_recording_zoom_h2n = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+tests = "py.test -v"
+
+[tool.pixi.dependencies]
+ffmpeg-python = ">=0.2.0,<0.3"
+pytest = ">=8.4.2,<9"
+
+
+[project.scripts]
+audio-live-record-postprocess-file = "audio_postprocess_live_recording_zoom_h2n.cli:audio_live_record_postprocess_file"
