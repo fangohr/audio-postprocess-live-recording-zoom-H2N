@@ -25,7 +25,7 @@ audio-postprocess-live-recording input.mp3
 ```
 to create `processed-input.mp3`.
 
-Or define the prefix:
+Or define the prefix (which defaults to `processed-`):
 ```console
 audio-postprocess-live-recording song.mp3 --prefix 2025-10-09-
 ```
