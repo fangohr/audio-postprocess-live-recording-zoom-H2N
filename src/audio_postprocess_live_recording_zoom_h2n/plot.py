@@ -9,7 +9,7 @@ from audio_postprocess_live_recording_zoom_h2n.cli import process_file
 import ffmpeg
 
 
-def create_white_noise_file(n_sec: float, filename : str) -> pathlib.Path:
+def create_white_noise_file(n_sec: float, filename: str) -> pathlib.Path:
     """Create a n_sec seconds long white noise file with name `filename` and
     return its path.
     """
@@ -35,7 +35,8 @@ def load_mono(path, sr=44100):
         y = y / np.max(np.abs(y))
     return y, sr
 
-def psd_db(y, sr, nperseg=1024*16, overlap=0.5):
+
+def psd_db(y, sr, nperseg=1024 * 16, overlap=0.5):
     nperseg = min(nperseg, len(y)) if len(y) > 0 else nperseg
     noverlap = int(nperseg * overlap)
     f, Pxx = welch(
@@ -53,14 +54,17 @@ def psd_db(y, sr, nperseg=1024*16, overlap=0.5):
     db = 10 * np.log10(Pxx)
     return f, db
 
+
 def smooth(y_db, window=51, poly=3):
     # Savitzky–Golay smoothing (keep features but reduce variance).
     w = min(window, len(y_db) - (1 - len(y_db) % 2))  # ensure odd & ≤ len
     w = w if w >= 5 and w % 2 == 1 else 5
     return savgol_filter(y_db, window_length=w, polyorder=min(poly, w - 2))
 
-def plot_two_spectra(white_mp3, eq_mp3, sr=44100, fmin=10, fmax=10000,
-                     smooth_curves=True):
+
+def plot_two_spectra(
+    white_mp3, eq_mp3, sr=44100, fmin=10, fmax=10000, smooth_curves=True
+):
     y1, sr1 = load_mono(white_mp3, sr=sr)
     y2, sr2 = load_mono(eq_mp3, sr=sr)
 
@@ -105,5 +109,3 @@ def main():
     _ = create_white_noise_file(10, "white_noise.mp3")
     process_file("white_noise.mp3", "processed.mp3")
     plot_two_spectra("white_noise.mp3", "processed.mp3")
-
-

@@ -27,7 +27,9 @@ jobs:
         run: pixi install
 
       - name: Run style checks (pep8)
-        run: pixi run check
+        run: |
+	  pixi run check
+          pixi run black --check .
 
       - name: Run unit tests
         run: pixi run test

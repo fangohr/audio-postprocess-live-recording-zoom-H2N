@@ -65,7 +65,7 @@ def process_file(in_file: str, out_file: str):
     # Loudness normalization (EBU R128)
     loudnorm = {
         "I": -14,  # target integrated loudness in LUFS (-16 normal,
-                   # -14 spotify loudness)
+        # -14 spotify loudness)
         "TP": -1.5,  # true peak limit (dBFS)
         "LRA": 11,  # target loudness range
     }
@@ -86,8 +86,8 @@ def process_file(in_file: str, out_file: str):
 def do_parse_arguments():
     parser = argparse.ArgumentParser(
         prog="audio-live-record-postprocess-file",
-        description="Apply postprocessing (EQ, compression, normalization, etc.)" + \
-            "to audio files.",
+        description="Apply postprocessing (EQ, compression, normalization, etc.)"
+        + "to audio files.",
     )
     parser.add_argument(
         "--prefix",
