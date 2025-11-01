@@ -57,6 +57,11 @@ Implementation:
   - if desired, push low frequences a bit further (probably mostly making up for poor speakers: at rehearsal time and when listening)
 - Details are in [src/audio_postprocess_live_recording_zoom_h2n/cli.py](src/audio_postprocess_live_recording_zoom_h2n/cli.py) and can be modified according to taste.
 
+----
 
+## Ideas for additional features
 
-
+- debug option to save a number of mp3s, each with only one filter applied (or have cumulative use of filters)
+- logging of parameters:
+  - together with the processed files, save the parameters given to ffmpeg (i.e. the dictionaries for each effect) in some log file format. This would help to reproduce the post processing as it would record the chosen parameters.
+  - if this is implemented, the script should also be able to read this log file format.
