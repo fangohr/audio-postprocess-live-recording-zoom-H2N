@@ -8,7 +8,7 @@ import ffmpeg
 # Documentation: https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters
 
 
-def process_file(in_file: str, out_file: str):
+def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
     stream = ffmpeg.input(in_file)
 
     # High-pass filter to remove sub-bass rumble
@@ -71,7 +71,14 @@ def process_file(in_file: str, out_file: str):
     }
 
     stream = ffmpeg.filter(stream, "loudnorm", **loudnorm)
-    stream = ffmpeg.output(stream, out_file, acodec="libmp3lame", audio_bitrate="192k")
+    if output_format == "mp3":
+        stream = ffmpeg.output(
+            stream, out_file, acodec="libmp3lame", audio_bitrate="192k"
+        )
+    elif output_format == "wav":
+        stream = ffmpeg.output(stream, out_file, acodec="pcm_s16le")
+    else:
+        raise ValueError(f"Unsupported output format: {output_format}")
 
     # for debugging: run synchronishly and check output
     out, err = ffmpeg.run(
@@ -83,7 +90,7 @@ def process_file(in_file: str, out_file: str):
     # print(out.decode())
 
 
-def do_parse_arguments():
+def do_parse_arguments(argv=None):
     parser = argparse.ArgumentParser(
         prog="audio-live-record-postprocess-file",
         description="Apply postprocessing (EQ, compression, normalization, etc.)"
@@ -95,10 +102,15 @@ def do_parse_arguments():
         help="Prefix for output filenames (default: %(default)s)",
     )
     parser.add_argument(
+        "--wav",
+        action="store_true",
+        help="Write WAV output instead of the default MP3 output",
+    )
+    parser.add_argument(
         "filenames", nargs="+", help="List of input audio files to process"
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # prefix = args.prefix
     # filenames = args.filenames
@@ -110,10 +122,14 @@ def audio_live_recording_postprocess_file():
     args = do_parse_arguments()
     prefix = args.prefix
     filenames = args.filenames
+    output_format = "wav" if args.wav else "mp3"
 
     # Example: show what would be done
     for in_file in filenames:
         dirname, basename = os.path.split(in_file)
-        out_file = os.path.join(dirname, prefix + basename)
+        stem, _ = os.path.splitext(basename)
+        out_file = os.path.join(dirname, f"{prefix}{stem}.{output_format}")
         print(f"Processing {in_file} → {out_file}")
-        process_file(in_file=in_file, out_file=out_file)
+        process_file(
+            in_file=in_file, out_file=out_file, output_format=output_format
+        )

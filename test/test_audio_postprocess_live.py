@@ -2,7 +2,10 @@ import pathlib
 import pytest
 import ffmpeg
 
-from audio_postprocess_live_recording_zoom_h2n.cli import process_file
+from audio_postprocess_live_recording_zoom_h2n.cli import (
+    do_parse_arguments,
+    process_file,
+)
 
 
 #
@@ -58,3 +61,34 @@ def test_process_file(white_noise_file: pathlib.Path, tmp_path: pathlib.Path):
 
     # (Optional) sanity check: ensure file size > 0 bytes
     assert output.stat().st_size > 0, "Output file is empty."
+
+
+def test_process_file_wav_output(
+    white_noise_file: pathlib.Path, tmp_path: pathlib.Path
+):
+    """Ensure process_file() can create WAV output when requested."""
+    output = tmp_path / "processed.wav"
+
+    assert not output.exists(), "Test setup error: processed.wav already exists."
+
+    process_file(
+        in_file=str(white_noise_file), out_file=str(output), output_format="wav"
+    )
+
+    assert output.exists(), "process_file() did not create processed.wav."
+    assert output.stat().st_size > 0, "WAV output file is empty."
+
+
+def test_parse_arguments_defaults_to_mp3():
+    args = do_parse_arguments(["input.wav"])
+
+    assert args.wav is False
+    assert args.prefix == "processed-"
+    assert args.filenames == ["input.wav"]
+
+
+def test_parse_arguments_allows_wav():
+    args = do_parse_arguments(["--wav", "input.wav"])
+
+    assert args.wav is True
+    assert args.filenames == ["input.wav"]
