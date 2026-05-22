@@ -130,6 +130,4 @@ def audio_live_recording_postprocess_file():
         stem, _ = os.path.splitext(basename)
         out_file = os.path.join(dirname, f"{prefix}{stem}.{output_format}")
         print(f"Processing {in_file} → {out_file}")
-        process_file(
-            in_file=in_file, out_file=out_file, output_format=output_format
-        )
+        process_file(in_file=in_file, out_file=out_file, output_format=output_format)
