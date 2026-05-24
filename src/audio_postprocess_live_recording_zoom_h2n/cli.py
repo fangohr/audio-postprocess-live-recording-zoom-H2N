@@ -21,8 +21,8 @@ def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
     # Suggestions from Logic Pro for Zoom H2N recordings:
     # 1) +5 dB boost centered at 75 Hz with Q=1.0 (covers roughly 50–100 Hz)
     # 2) -5 dB cut centered at 350 Hz with Q=1.0 (covers roughly 200–500 Hz)
-    eq1 = {"f": 75, "t": "q", "w": 1.0, "g": 5}
-    eq2 = {"f": 350, "t": "q", "w": 1.0, "g": -5}
+    eq1 = {"f": 75, "t": "q", "w": 1.0, "g": 3}
+    eq2 = {"f": 350, "t": "q", "w": 1.0, "g": -3}
     stream = ffmpeg.filter(stream, "equalizer", **eq1)
     stream = ffmpeg.filter(stream, "equalizer", **eq2)
 
@@ -64,7 +64,7 @@ def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
 
     # Loudness normalization (EBU R128)
     loudnorm = {
-        "I": -14,  # target integrated loudness in LUFS (-16 normal,
+        "I": -16,  # target integrated loudness in LUFS (-16 normal,
         # -14 spotify loudness)
         "TP": -1.5,  # true peak limit (dBFS)
         "LRA": 11,  # target loudness range
