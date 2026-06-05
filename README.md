@@ -89,3 +89,10 @@ Details:
 - logging of parameters:
   - together with the processed files, save the parameters given to ffmpeg (i.e. the dictionaries for each effect) in some log file format. This would help to reproduce the post processing as it would record the chosen parameters.
   - if this is implemented, the script should also be able to read this log file format.
+
+----
+
+
+## Developer notes
+
+- run `black` before committing
