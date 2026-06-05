@@ -8,9 +8,46 @@ import ffmpeg
 # Documentation: https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters
 
 
-def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
+def process_file(
+    in_file: str,
+    out_file: str,
+    output_format: str = "mp3",
+    ebass: bool = False,
+    loudness: bool = False,
+):
     stream = ffmpeg.input(in_file)
 
+    if ebass:
+        stream = apply_ebass_filters(stream)
+
+    if loudness:
+        stream = ffmpeg.filter(stream, "loudnorm", I=-16, LRA=8, TP=-1)
+
+    if output_format == "mp3":
+        if loudness:
+            stream = ffmpeg.output(
+                stream, out_file, acodec="libmp3lame", **{"q:a": 2}
+            )
+        else:
+            stream = ffmpeg.output(
+                stream, out_file, acodec="libmp3lame", audio_bitrate="192k"
+            )
+    elif output_format == "wav":
+        stream = ffmpeg.output(stream, out_file, acodec="pcm_s16le")
+    else:
+        raise ValueError(f"Unsupported output format: {output_format}")
+
+    # for debugging: run synchronishly and check output
+    out, err = ffmpeg.run(
+        stream, overwrite_output=True, capture_stdout=True, capture_stderr=True
+    )
+    # Can print output if desired:
+    # Seems that all output goes to stderro by default, and stdout is empty.
+    # print(err.decode())
+    # print(out.decode())
+
+
+def apply_ebass_filters(stream):
     # High-pass filter to remove sub-bass rumble
     # ---- High-pass filter (20 Hz, Butterworth high-pass:
     # reduce by ~12 dB/oct well below 20Hz) ----
@@ -19,8 +56,8 @@ def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
 
     # EQ:
     # Suggestions from Logic Pro for Zoom H2N recordings:
-    # 1) +5 dB boost centered at 75 Hz with Q=1.0 (covers roughly 50–100 Hz)
-    # 2) -5 dB cut centered at 350 Hz with Q=1.0 (covers roughly 200–500 Hz)
+    # 1) +5 dB boost centered at 75 Hz with Q=1.0 (covers roughly 50-100 Hz)
+    # 2) -5 dB cut centered at 350 Hz with Q=1.0 (covers roughly 200-500 Hz)
     eq1 = {"f": 75, "t": "q", "w": 1.0, "g": 3}
     eq2 = {"f": 350, "t": "q", "w": 1.0, "g": -3}
     stream = ffmpeg.filter(stream, "equalizer", **eq1)
@@ -70,24 +107,7 @@ def process_file(in_file: str, out_file: str, output_format: str = "mp3"):
         "LRA": 11,  # target loudness range
     }
 
-    stream = ffmpeg.filter(stream, "loudnorm", **loudnorm)
-    if output_format == "mp3":
-        stream = ffmpeg.output(
-            stream, out_file, acodec="libmp3lame", audio_bitrate="192k"
-        )
-    elif output_format == "wav":
-        stream = ffmpeg.output(stream, out_file, acodec="pcm_s16le")
-    else:
-        raise ValueError(f"Unsupported output format: {output_format}")
-
-    # for debugging: run synchronishly and check output
-    out, err = ffmpeg.run(
-        stream, overwrite_output=True, capture_stdout=True, capture_stderr=True
-    )
-    # Can print output if desired:
-    # Seems that all output goes to stderro by default, and stdout is empty.
-    # print(err.decode())
-    # print(out.decode())
+    return ffmpeg.filter(stream, "loudnorm", **loudnorm)
 
 
 def do_parse_arguments(argv=None):
@@ -98,12 +118,12 @@ def do_parse_arguments(argv=None):
     )
     parser.add_argument(
         "--prefix",
-        default="",
+        default="processed-",
         help="Prefix for output filenames (default: %(default)s)",
     )
     parser.add_argument(
         "--postfix",
-        default="-processed",
+        default="",
         help="postfix for output filenames (default: %(default)s)",
     )
 
@@ -111,6 +131,16 @@ def do_parse_arguments(argv=None):
         "--wav",
         action="store_true",
         help="Write WAV output instead of the default MP3 output",
+    )
+    parser.add_argument(
+        "--ebass",
+        action="store_true",
+        help="Apply the original Zoom H2N EQ, bass, and loudness processing",
+    )
+    parser.add_argument(
+        "--loudness",
+        action="store_true",
+        help="Apply loudnorm=I=-16:LRA=8:TP=-1 before MP3 conversion",
     )
     parser.add_argument(
         "filenames", nargs="+", help="List of input audio files to process"
@@ -131,10 +161,34 @@ def audio_live_recording_postprocess_file():
     filenames = args.filenames
     output_format = "wav" if args.wav else "mp3"
 
+    print_conversion_settings(args, output_format)
+
     # Example: show what would be done
     for in_file in filenames:
         dirname, basename = os.path.split(in_file)
         stem, _ = os.path.splitext(basename)
         out_file = os.path.join(dirname, f"{prefix}{stem}{postfix}.{output_format}")
-        print(f"Processing {in_file} → {out_file}")
-        process_file(in_file=in_file, out_file=out_file, output_format=output_format)
+        print(f"Processing {in_file} -> {out_file}")
+        process_file(
+            in_file=in_file,
+            out_file=out_file,
+            output_format=output_format,
+            ebass=args.ebass,
+            loudness=args.loudness,
+        )
+
+
+def print_conversion_settings(args, output_format: str):
+    processing = []
+    if args.ebass:
+        processing.append("ebass")
+    if args.loudness:
+        processing.append("loudness")
+    if not processing:
+        processing.append("none")
+
+    print("Conversion settings:")
+    print(f"  output format: {output_format}")
+    print(f"  processing: {', '.join(processing)}")
+    print(f"  filename prefix: {args.prefix!r}")
+    print(f"  filename postfix: {args.postfix!r}")

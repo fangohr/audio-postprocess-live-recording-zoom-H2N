@@ -4,6 +4,7 @@ import ffmpeg
 
 from audio_postprocess_live_recording_zoom_h2n.cli import (
     do_parse_arguments,
+    print_conversion_settings,
     process_file,
 )
 
@@ -79,10 +80,26 @@ def test_process_file_wav_output(
     assert output.stat().st_size > 0, "WAV output file is empty."
 
 
+@pytest.mark.parametrize("processing_switch", ["ebass", "loudness"])
+def test_process_file_processing_modes(
+    white_noise_file: pathlib.Path, tmp_path: pathlib.Path, processing_switch: str
+):
+    """Ensure each optional processing mode creates an MP3 output file."""
+    output = tmp_path / f"processed-{processing_switch}.mp3"
+    kwargs = {processing_switch: True}
+
+    process_file(in_file=str(white_noise_file), out_file=str(output), **kwargs)
+
+    assert output.exists(), f"{processing_switch} mode did not create output."
+    assert output.stat().st_size > 0, f"{processing_switch} output is empty."
+
+
 def test_parse_arguments_defaults_to_mp3():
     args = do_parse_arguments(["input.wav"])
 
     assert args.wav is False
+    assert args.ebass is False
+    assert args.loudness is False
     assert args.prefix == "processed-"
     assert args.filenames == ["input.wav"]
 
@@ -92,3 +109,30 @@ def test_parse_arguments_allows_wav():
 
     assert args.wav is True
     assert args.filenames == ["input.wav"]
+
+
+def test_parse_arguments_allows_ebass():
+    args = do_parse_arguments(["--ebass", "input.wav"])
+
+    assert args.ebass is True
+    assert args.loudness is False
+    assert args.filenames == ["input.wav"]
+
+
+def test_parse_arguments_allows_loudness():
+    args = do_parse_arguments(["--loudness", "input.wav"])
+
+    assert args.ebass is False
+    assert args.loudness is True
+    assert args.filenames == ["input.wav"]
+
+
+def test_print_conversion_settings(capsys):
+    args = do_parse_arguments(["--ebass", "--loudness", "input.wav"])
+
+    print_conversion_settings(args, "mp3")
+
+    output = capsys.readouterr().out
+    assert "Conversion settings:" in output
+    assert "output format: mp3" in output
+    assert "processing: ebass, loudness" in output

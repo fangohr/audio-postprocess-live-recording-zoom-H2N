@@ -21,19 +21,33 @@ pixi shell
 ## Usage
 
 ```console
-audio-postprocess-live-recording input.mp3
+audio-postprocess-live-recording input.wav
 ```
-to create `processed-input.mp3`.
+to convert `input.wav` to `processed-input.mp3`.
+
+To apply the original Zoom H2N post-processing chain, use `--ebass`:
+
+```console
+audio-postprocess-live-recording --ebass input.wav
+```
+
+To apply loudness normalization equivalent to
+`ffmpeg -i input.wav -af "loudnorm=I=-16:LRA=8:TP=-1" -codec:a libmp3lame -q:a 2 output.mp3`,
+use `--loudness`:
+
+```console
+audio-postprocess-live-recording --loudness input.wav
+```
 
 Or define the prefix (which defaults to `processed-`):
 ```console
-audio-postprocess-live-recording song.mp3 --prefix 2025-10-09-
+audio-postprocess-live-recording song.wav --prefix 2025-10-09-
 ```
-so that the processed version of `song.mp3` is stored as `2025-10-09-song.mp3`.
+so that the converted version of `song.wav` is stored as `2025-10-09-song.mp3`.
 
 More than one filename can be provided, for example
 ```console
-audio-postprocess-live-recording song1.mp3 song2.mp3 --prefix 2025-10-09-
+audio-postprocess-live-recording song1.wav song2.wav --prefix 2025-10-09-
 ```
 
 ## More information: context, design and implementation
