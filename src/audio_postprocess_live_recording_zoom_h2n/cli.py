@@ -98,9 +98,15 @@ def do_parse_arguments(argv=None):
     )
     parser.add_argument(
         "--prefix",
-        default="processed-",
+        default="",
         help="Prefix for output filenames (default: %(default)s)",
     )
+    parser.add_argument(
+        "--postfix",
+        default="-processed",
+        help="postfix for output filenames (default: %(default)s)",
+    )
+
     parser.add_argument(
         "--wav",
         action="store_true",
@@ -121,6 +127,7 @@ def do_parse_arguments(argv=None):
 def audio_live_recording_postprocess_file():
     args = do_parse_arguments()
     prefix = args.prefix
+    postfix = args.postfix
     filenames = args.filenames
     output_format = "wav" if args.wav else "mp3"
 
@@ -128,6 +135,6 @@ def audio_live_recording_postprocess_file():
     for in_file in filenames:
         dirname, basename = os.path.split(in_file)
         stem, _ = os.path.splitext(basename)
-        out_file = os.path.join(dirname, f"{prefix}{stem}.{output_format}")
+        out_file = os.path.join(dirname, f"{prefix}{stem}{postfix}.{output_format}")
         print(f"Processing {in_file} → {out_file}")
         process_file(in_file=in_file, out_file=out_file, output_format=output_format)
