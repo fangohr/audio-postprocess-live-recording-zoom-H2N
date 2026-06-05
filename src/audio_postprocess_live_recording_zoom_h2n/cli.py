@@ -25,9 +25,7 @@ def process_file(
 
     if output_format == "mp3":
         if loudness:
-            stream = ffmpeg.output(
-                stream, out_file, acodec="libmp3lame", **{"q:a": 2}
-            )
+            stream = ffmpeg.output(stream, out_file, acodec="libmp3lame", **{"q:a": 2})
         else:
             stream = ffmpeg.output(
                 stream, out_file, acodec="libmp3lame", audio_bitrate="192k"
